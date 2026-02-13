@@ -1,12 +1,10 @@
 import pygame
 import sys
 from constants import *
-from logger import log_state
+from logger import log_state, log_event
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
-from logger import log_event
-from circleshape import CircleShape
 from shot import Shot
 
 def main():
@@ -60,7 +58,7 @@ def main():
             for shot in shots:
                 if obj.collides_with(shot):
                     log_event("asteroid_shot")
-                    obj.kill()
+                    obj.split()
                     shot.kill()
 
         pygame.display.flip()
