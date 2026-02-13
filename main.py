@@ -31,7 +31,7 @@ def main():
     asteroid_field = AsteroidField()
 
     Shot.containers = (shots, updatable, drawable)
-
+    
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     clock = pygame.time.Clock()
@@ -55,6 +55,13 @@ def main():
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
+
+        for obj in asteroids:
+            for shot in shots:
+                if obj.collides_with(shot):
+                    log_event("asteroid_shot")
+                    obj.kill()
+                    shot.kill()
 
         pygame.display.flip()
 
