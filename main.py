@@ -7,6 +7,7 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 from score import Score
+from lives import Lives
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -32,6 +33,8 @@ def main():
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     clock = pygame.time.Clock()
     dt = 0
+    lives = Lives()
+    is_game_over = False
      
     while True:
         log_state()
@@ -43,15 +46,38 @@ def main():
 
         updatable.update(dt)
 
-        for obj in drawable:
-            obj.draw(screen)
+        if not is_game_over:
+            for obj in drawable:
+                obj.draw(screen)
+        else:
+            font = pygame.font.SysFont("monospace", 50)
+            msg = font.render("GAME OVER - Press R to Restart", True, "red")
+            msg_rect = msg.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+            screen.blit(msg, msg_rect)
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_r]:
+                is_game_over = False
+                lives.value = 3
+                score.value = 0
+                for asteroid in asteroids:
+                    asteroid.kill()
+                for shot in shots:
+                    shot.kill()
+                player.respawn()
 
-        for obj in asteroids:
-            if obj.collides_with(player):
-                log_event("player_hit")
-                print("Game over!")
-                sys.exit()
-
+        if not is_game_over:
+            for asteroid in asteroids:
+                if asteroid.collides_with(player):
+                    if player.invulnerable_timer <= 0:
+                        log_event("player_hit")
+                        lives.decrease()
+                        if lives.value <= 0:
+                            lives.value = 0
+                            is_game_over = True
+                            print("Game over!")
+                        else:
+                            player.respawn()  
+                   
         for asteroid in asteroids:
             for shot in shots:
                 if asteroid.collides_with(shot):
@@ -63,6 +89,7 @@ def main():
                     else:
                         score.increment(200)
 
+        lives.draw(screen)
         score.draw(screen)
         pygame.display.flip()
 
