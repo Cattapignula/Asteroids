@@ -7,7 +7,7 @@ class Lives:
 
     def draw(self, screen):
         lives_text = self.font.render(f"Lives: {self.value}", True, (255, 255, 255))
-        screen.blit(lives_text, (10, 50))
+        screen.blit(lives_text, (10, 90))
 
     def decrease(self):
         self.value -= 1
