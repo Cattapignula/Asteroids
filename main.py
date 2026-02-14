@@ -91,18 +91,18 @@ def main():
                         else:
                             player.respawn()  
                    
-        for asteroid in asteroids:
-            for shot in shots:
-                if asteroid.collides_with(shot):
-                    log_event("asteroid_shot")
-                    for _ in range(15):
-                        Particle(asteroid.position.x, asteroid.position.y, 2)
-                    asteroid.split()
-                    shot.kill()
-                    if asteroid.radius > ASTEROID_MIN_RADIUS:
-                        score.increment(100)
-                    else:
-                        score.increment(200)
+            for asteroid in asteroids:
+                for shot in shots:
+                    if asteroid.collides_with(shot):
+                        log_event("asteroid_shot")
+                        for _ in range(15):
+                            Particle(asteroid.position.x, asteroid.position.y, 2)
+                        asteroid.split()
+                        shot.kill()
+                        if asteroid.radius > ASTEROID_MIN_RADIUS:
+                            score.increment(100)
+                        else:
+                            score.increment(200)
 
         lives.draw(screen)
         score.draw(screen)
