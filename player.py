@@ -10,6 +10,7 @@ class Player(CircleShape):
         self.velocity = pygame.Vector2(0, 0)
         self.shot_cooldown_timer = 0
         self.invulnerable_timer = 0
+        self.mask = self.get_mask()
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -26,6 +27,18 @@ class Player(CircleShape):
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
+
+    def get_mask(self):
+        size = self.radius * 2
+        surface = pygame.Surface((size, size), pygame.SRCALPHA)
+        center = pygame.Vector2(self.radius, self.radius)
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
+        a = center + forward * self.radius
+        b = center - forward * self.radius - right
+        c = center - forward * self.radius + right
+        pygame.draw.polygon(surface, "white", [a, b, c])
+        return pygame.mask.from_surface(surface)
 
     def move(self, dt):
         unit_vector = pygame.Vector2(0, 1)
@@ -73,3 +86,5 @@ class Player(CircleShape):
             
         self.position.x %= SCREEN_WIDTH
         self.position.y %= SCREEN_HEIGHT
+
+        self.mask = self.get_mask()
